@@ -70,15 +70,17 @@ export const rotateObject = (scene, mouseStart, setMouseStart, e) =>{
     if(!scene || !mouseStart.x)
         return
 
+    let startX = e.clientX == 0 ? e.clientX : e.touches[0].pageX;
+    let startY = e.clientY == 0 ? e.clientY : e.touches[0].pageY;
     //2 because 0 is ambient light and 1 is directional light
     if(scene.children[2]){
-        scene.children[2].rotation.y += (mouseStart.x - e.clientX) * 0.005;
-        scene.children[2].rotation.x += (mouseStart.y - e.clientY) * 0.005;
+        scene.children[2].rotation.y -= (mouseStart.x - startX) * 0.005;
+        scene.children[2].rotation.x -= (mouseStart.y - startY) * 0.005;
     }
 
     setMouseStart({
-        x: e.clientX,
-        y: e.clientY
+        x: startX,
+        y: startY
     })
 }
 

@@ -7,6 +7,7 @@
   position: fixed;
   background-color: rgba(177, 169, 159, 0.144);
   height: 100%;
+  touch-action: none;
 }
 
 #left{

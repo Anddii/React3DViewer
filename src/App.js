@@ -17,10 +17,18 @@ function App() {
   });
 
   function startRotate(e){
-    setMouseStart({
-      x: e.clientX,
-      y: e.clientY
-    })
+    if(e.clientX){
+      setMouseStart({
+        x: e.clientX,
+        y: e.clientY
+      })
+    }else{
+      e.preventDefault();
+      setMouseStart({
+        x: e.touches[0].pageX,
+        y: e.touches[0].pageY
+      })
+    }
   }
 
   return (
