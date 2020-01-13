@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     //we created scene
     if(!scene){
-      setScene(createScene(setContent))
+      setScene(createScene(setContent, setIndex))
     }
   });
 

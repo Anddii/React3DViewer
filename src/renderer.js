@@ -8,14 +8,7 @@ export const updateIndex = (value, index, setIndex, scene, content)=> {
     updateScene(scene, content[newVal])
 }
 
-export const createScene = (setContent)=>{
-    fetch('/models.json')
-    .then((r) => r.text())
-    .then(text  => {
-        const content = JSON.parse(text)
-        setContent(content)
-        loadFbx(scene, content[0]);
-    })  
+export const createScene = (setContent, setIndex)=>{
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -41,6 +34,15 @@ export const createScene = (setContent)=>{
 
     camera.position.z = 500;
     camera.position.y = -60;
+
+    fetch('/models.json')
+    .then((r) => r.text())
+    .then(text  => {
+        const content = JSON.parse(text)
+        setContent(content)
+        loadFbx(scene, content[content.length-1]);
+        setIndex(content.length-1)
+    })  
 
     var animate = function () {
         requestAnimationFrame( animate );
@@ -72,7 +74,6 @@ export const rotateObject = (scene, mouseStart, setMouseStart, e) =>{
 }
 
 export const updateScene = (scene, index) => {
-    console.log(index)
     for(var i = 2; i < scene.children.length; i++){
         scene.remove(scene.children[i]);
     }
