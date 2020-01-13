@@ -9,11 +9,12 @@ export const updateIndex = (value, index, setIndex, scene, content)=> {
 }
 
 export const createScene = (setContent)=>{
-
     fetch('/models.json')
     .then((r) => r.text())
     .then(text  => {
-      setContent(JSON.parse(text))
+        const content = JSON.parse(text)
+        setContent(content)
+        loadFbx(scene, content[0]);
     })  
 
     var scene = new THREE.Scene();
@@ -22,6 +23,10 @@ export const createScene = (setContent)=>{
     var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+    renderer.setClearColor (0x9ea9ad, 1);
 
     //lights
     //Ambient
@@ -33,25 +38,6 @@ export const createScene = (setContent)=>{
     light.position.set( 0, 1000, 1000 ); 			//default; light shining from top
     light.castShadow = true;            // default false
     scene.add( light );
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    renderer.setClearColor (0x9ea9ad, 1);
-
-    var loader = new FBXLoader();
-    loader.load( '/models/head.fbx', ( object ) => {
-        object.traverse( function ( child ) {
-            if ( child.isMesh ) {
-                child.material = new THREE.MeshLambertMaterial( { 
-                    color: 0xb0b0b0,
-                } );
-                object.castShadow = false; //default is false
-                object.receiveShadow = false; //default
-            }
-        } );
-        scene.add( object );
-    });
 
     camera.position.z = 500;
     camera.position.y = -60;
@@ -70,9 +56,10 @@ export const rotateObject = (scene, mouseStart, setMouseStart, e) =>{
     if(!scene || !mouseStart.x)
         return
 
-    let startX = e.clientX == 0 ? e.clientX : e.touches[0].pageX;
-    let startY = e.clientY == 0 ? e.clientY : e.touches[0].pageY;
-    //2 because 0 is ambient light and 1 is directional light
+    let startX = e.clientX !== undefined ? e.clientX : e.touches[0].pageX;
+    let startY = e.clientY !== undefined ? e.clientY : e.touches[0].pageY;
+
+    // 0 is ambient light and 1 is directional light
     if(scene.children[2]){
         scene.children[2].rotation.y -= (mouseStart.x - startX) * 0.005;
         scene.children[2].rotation.x -= (mouseStart.y - startY) * 0.005;
@@ -90,12 +77,16 @@ export const updateScene = (scene, index) => {
         scene.remove(scene.children[i]);
     }
 
+    loadFbx(scene, index);
+}
+
+function loadFbx(scene, index){
     var loader = new FBXLoader();
     loader.load( "/models/"+index["location"], ( object ) => {
         object.traverse( function ( child ) {
             if ( child.isMesh ) {
                 child.material = new THREE.MeshLambertMaterial( { 
-                    color: 0xb0b0b0,
+                    color: 0xb0b0b0,   //Use imported material: child.material.color
                 } );
                 object.castShadow = false; //default is false
                 object.receiveShadow = false; //default
