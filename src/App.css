@@ -1,0 +1,53 @@
+#root{
+  position: fixed;
+}
+
+.nav-style {
+  width: 100%;
+  position: fixed;
+  background-color: rgba(177, 169, 159, 0.144);
+  height: 100%;
+}
+
+#left{
+  color: white;
+  border: none;
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.219);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
+  height: 50%;
+  width: 10%;
+
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translate(-0%, -50%);
+  transform: translate(-0%, -50%);
+}
+
+#right{
+  color: white;
+  position: absolute;
+  border: none;
+  text-decoration: none;
+  float: right;
+  background-color: rgba(255, 255, 255, 0.219);
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
+  height: 50%;
+  width: 10%;
+
+  margin: 0;
+
+  top: 50%;
+  left: 90%;
+  -ms-transform: translate(-0%, -50%);
+  transform: translate(-0%, -50%);
+}
+
+#left:focus { 
+  outline: 0 !important;  
+}
+
+#right:focus { 
+  outline: 0 !important;  
+}
