@@ -52,3 +52,19 @@
 #right:focus { 
   outline: 0 !important;  
 }
+
+.controls-slider{
+  z-index: 99;
+  position: fixed;
+  bottom: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.controls-slider span{
+  z-index: 99;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}

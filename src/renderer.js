@@ -1,16 +1,22 @@
 import * as THREE from "three";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-// var SampleImagePath = require('/models/head1.fbx');
+
+let allContent = [];
+let loadIndex = 0;
+var scene;
+
+let modelCount = 0;
+let allModels = [];
 
 export const updateIndex = (value, index, setIndex, scene, content)=> {
     var newVal = index+value;
     setIndex(newVal)
-    updateScene(scene, content[newVal])
+    updateScene(scene, allModels[newVal])
 }
 
 export const createScene = (setContent, setIndex)=>{
-
-    var scene = new THREE.Scene();
+    
+    scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -39,9 +45,10 @@ export const createScene = (setContent, setIndex)=>{
     .then((r) => r.text())
     .then(text  => {
         const content = JSON.parse(text)
-        setContent(content)
-        loadFbx(scene, content[content.length-1]);
-        setIndex(content.length-1)
+        modelCount = content.length;
+        setContent(content.reverse())
+        allContent = content;
+        load();
     })  
 
     var animate = function () {
@@ -77,22 +84,32 @@ export const updateScene = (scene, index) => {
     for(var i = 2; i < scene.children.length; i++){
         scene.remove(scene.children[i]);
     }
-
-    loadFbx(scene, index);
+    scene.add( index );
 }
 
-function loadFbx(scene, index){
-    var loader = new FBXLoader();
-    loader.load( "/models/"+index["location"], ( object ) => {
-        object.traverse( function ( child ) {
-            if ( child.isMesh ) {
-                child.material = new THREE.MeshLambertMaterial( { 
-                    color: 0xb0b0b0,   //Use imported material: child.material.color
-                } );
-                object.castShadow = false; //default is false
-                object.receiveShadow = false; //default
-            }
-        } );
-        scene.add( object );
+function load() {
+    return new Promise( (resolve, reject) => {
+        const loader = new FBXLoader();
+        loader.load("/models/"+allContent[loadIndex]["location"], function (object) {
+            object.traverse( function ( child ) {
+                if ( child.isMesh ) {
+                    child.material = new THREE.MeshLambertMaterial( { 
+                        color: 0xb0b0b0,   //Use imported material: child.material.color
+                    } );
+                    object.castShadow = false; //default is false
+                    object.receiveShadow = false; //default
+                }
+            } );
+            allModels.push(object)
+            // scene.add( allModels[0] );
+            resolve(object);
+        });
+    
+    }).then(()=>{
+        if(loadIndex == 0)
+            scene.add(allModels[0])
+        loadIndex++;
+        if(loadIndex < allContent.length)
+            load()
     });
 }
